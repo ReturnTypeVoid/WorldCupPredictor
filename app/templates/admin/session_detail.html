@@ -1,0 +1,75 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ session.slug }}{% endblock %}
+
+{% block content %}
+<p style="margin-bottom:1.25rem">
+  <a href="{{ url_for('admin.dashboard') }}" style="color:var(--text-3);font-size:.875rem">
+    ← Dashboard
+  </a>
+</p>
+
+<h1 class="page-title">{{ session.slug }}</h1>
+
+<div class="card" style="margin-bottom:1rem">
+  <div style="display:flex;gap:2rem;flex-wrap:wrap">
+    <div>
+      <div class="label" style="margin-bottom:.3rem">Display name</div>
+      <div style="font-size:.9rem">{{ session.display_name or '—' }}</div>
+    </div>
+    <div>
+      <div class="label" style="margin-bottom:.3rem">Edit code</div>
+      <code style="font-family:monospace;font-size:.85rem;color:var(--green);background:var(--surface-2);padding:.2rem .5rem;border-radius:4px">{{ session.edit_code }}</code>
+    </div>
+    <div>
+      <div class="label" style="margin-bottom:.3rem">Created</div>
+      <div style="font-size:.85rem;color:var(--text-2)">{{ session.created_at[:16] }}</div>
+    </div>
+    <div style="margin-left:auto;align-self:flex-end">
+      <a href="/s/{{ session.slug }}" target="_blank" class="btn btn-ghost btn-sm">
+        View bracket →
+      </a>
+    </div>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+  <div class="card">
+    <h3 style="font-family:var(--font-display);font-size:1rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.85rem;color:var(--text-2)">Group Picks</h3>
+    {% if group_picks %}
+    <table class="data-table">
+      <thead><tr><th>Group</th><th>Pos</th><th>Team</th></tr></thead>
+      <tbody>
+        {% for p in group_picks %}
+        <tr>
+          <td>{{ p.group_letter }}</td>
+          <td style="color:var(--text-3)">{{ p.position }}</td>
+          <td>{{ p.team_name }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p style="color:var(--text-3);font-size:.875rem">No group picks yet.</p>
+    {% endif %}
+  </div>
+
+  <div class="card">
+    <h3 style="font-family:var(--font-display);font-size:1rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.85rem;color:var(--text-2)">Knockout Picks</h3>
+    {% if match_picks %}
+    <table class="data-table">
+      <thead><tr><th>Match</th><th>Winner</th></tr></thead>
+      <tbody>
+        {% for p in match_picks %}
+        <tr>
+          <td style="color:var(--text-3)">#{{ p.match_num }}</td>
+          <td>{{ p.winner }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p style="color:var(--text-3);font-size:.875rem">No knockout picks yet.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

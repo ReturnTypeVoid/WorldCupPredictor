@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>World Cup 2026 — Bracket Predictor</title>
+  <link rel="stylesheet" href="/static/css/main.css">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    .glow-orb {
+      position: fixed;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,209,104,0.06) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 2rem 1.5rem;
+      max-width: 580px;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 1.5rem;
+      animation: fadeUp 400ms ease both;
+    }
+    .eyebrow::before, .eyebrow::after {
+      content: '';
+      display: block;
+      width: 28px;
+      height: 1px;
+      background: currentColor;
+      opacity: 0.5;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(3.8rem, 10vw, 6.5rem);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      line-height: 0.9;
+      color: var(--text);
+      margin-bottom: 0.15em;
+      animation: fadeUp 400ms 80ms ease both;
+    }
+    .hero-title .accent { color: var(--green); }
+    .hero-sub {
+      font-size: 1.05rem;
+      color: var(--text-2);
+      margin-top: 1.25rem;
+      margin-bottom: 2.5rem;
+      animation: fadeUp 400ms 160ms ease both;
+      line-height: 1.65;
+    }
+    .cta-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      animation: fadeUp 400ms 240ms ease both;
+    }
+    .cta-note { font-size: 0.78rem; color: var(--text-3); }
+    .stats {
+      display: flex;
+      gap: 0;
+      justify-content: center;
+      margin-top: 3.5rem;
+      animation: fadeUp 400ms 320ms ease both;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--surface);
+    }
+    .stat {
+      text-align: center;
+      padding: 1rem 1.5rem;
+      flex: 1;
+    }
+    .stat + .stat { border-left: 1px solid var(--border); }
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.65rem;
+      color: var(--text-3);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-top: 0.3rem;
+    }
+    .btn-primary.loading { opacity: 0.7; pointer-events: none; }
+    .btn-primary.loading::after {
+      content: '';
+      display: inline-block;
+      width: 13px; height: 13px;
+      border: 2px solid rgba(0,0,0,0.25);
+      border-top-color: #000;
+      border-radius: 50%;
+      animation: spin 600ms linear infinite;
+      margin-left: 0.5rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #msg.err { color: var(--red); }
+    .wordmark {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-display);
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      z-index: 1;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="pitch-bg"></div>
+  <div class="glow-orb"></div>
+
+  <div class="hero">
+    <div class="eyebrow">USA &middot; Canada &middot; Mexico</div>
+
+    <h1 class="hero-title">
+      World <span class="accent">Cup</span><br>
+      2026
+    </h1>
+
+    <p class="hero-sub">
+      48 teams. 103 matches. One champion.<br>
+      Build your bracket, share the link, watch your picks unfold.
+    </p>
+
+    <div class="cta-group">
+      <button class="btn btn-primary btn-lg" id="create-btn">
+        Build my bracket
+      </button>
+      <p class="cta-note" id="msg">No sign-up needed &mdash; share with a link</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num">48</div>
+        <div class="stat-label">Teams</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">103</div>
+        <div class="stat-label">Matches</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">12</div>
+        <div class="stat-label">Groups</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">39</div>
+        <div class="stat-label">Days</div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="wordmark">FIFA World Cup 2026 &mdash; Bracket Predictor</footer>
+
+  <script src="/static/js/index.js"></script>
+</body>
+</html>

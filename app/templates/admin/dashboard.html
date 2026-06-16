@@ -1,0 +1,71 @@
+{% extends "admin/base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Dashboard</h1>
+
+<div class="stat-strip">
+  <div class="stat-cell">
+    <div class="stat-cell-num">{{ sessions | length }}</div>
+    <div class="stat-cell-label">Brackets</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-cell-num" id="live-status-dot">
+      {% if meta and meta.status %}
+        <span style="color:var(--green)">●</span>
+      {% else %}
+        <span style="color:var(--text-3)">○</span>
+      {% endif %}
+    </div>
+    <div class="stat-cell-label">Live sync</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-cell-num" style="font-size:0.75rem;color:var(--text-3)">
+      {{ meta.last_sync[:16] if meta and meta.last_sync else '—' }}
+    </div>
+    <div class="stat-cell-label">Last synced</div>
+  </div>
+</div>
+
+{% if meta and meta.error %}
+<div class="flash flash-danger" style="margin-bottom:1.5rem">{{ meta.error }}</div>
+{% endif %}
+
+<div class="card">
+  {% if sessions %}
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Bracket</th>
+        <th>Name</th>
+        <th>Created</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in sessions %}
+      <tr>
+        <td>
+          <a href="/s/{{ s.slug }}" target="_blank" class="slug">{{ s.slug }}</a>
+        </td>
+        <td>{{ s.display_name or '—' }}</td>
+        <td style="color:var(--text-3);font-size:0.8rem">{{ s.created_at[:16] }}</td>
+        <td style="text-align:right">
+          <a href="{{ url_for('admin.session_detail', slug=s.slug) }}"
+             class="btn btn-ghost btn-sm">View</a>
+          <button class="btn btn-danger btn-sm"
+                  data-delete-slug="{{ s.slug }}">Delete</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p style="color:var(--text-3);padding:.5rem 0;font-size:.9rem">No brackets created yet.</p>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/admin-dashboard.js"></script>
+{% endblock %}

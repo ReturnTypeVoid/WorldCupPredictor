@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Admin{% endblock %} — WC2026</title>
+  <link rel="stylesheet" href="/static/css/main.css">
+  <link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body>
+
+{% if request.endpoint != 'admin.login_page' %}
+<header class="admin-topbar">
+  <a href="/admin/" class="admin-brand">
+    <span class="admin-brand-dot"></span>
+    WC2026 Admin
+  </a>
+  <span class="admin-spacer"></span>
+  <span class="admin-user">{{ username }}</span>
+  <button class="btn btn-ghost btn-sm" id="logout-btn">Log out</button>
+</header>
+{% endif %}
+
+<div class="{% if request.endpoint != 'admin.login_page' %}admin-main{% endif %}">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+      <div class="flash flash-{{ cat }}">{{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+</div>
+
+<div id="toast"></div>
+
+<script type="application/json" id="app-config">
+{"accessTokenExpires": {{ config.JWT_ACCESS_TOKEN_EXPIRES }}}
+</script>
+<script src="/static/js/admin-base.js"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,145 @@
+/* team.css — Team profile page + fixture detail modal */
+
+:root {
+  --amber: #f59e0b;
+  --red:   #ef4444;
+}
+
+.team-page { max-width: 900px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+.tp-header  { margin-bottom: 1.75rem; }
+.tp-back    { font-size:.8rem; color:var(--text-3); text-decoration:none; display:inline-block; margin-bottom:.75rem; }
+.tp-back:hover { color:var(--text-2); }
+.tp-title   { font-family:var(--font-display); font-size:2rem; font-weight:800; display:flex; align-items:center; gap:.5rem; }
+.tp-group   { font-size:.8rem; color:var(--text-3); margin-top:.3rem; letter-spacing:.08em; text-transform:uppercase; }
+
+/* ── Sections ───────────────────────────────────────────────────────────── */
+.tp-section       { margin-bottom:2rem; }
+.tp-section-title { font-family:var(--font-display); font-size:.72rem; font-weight:700;
+                    letter-spacing:.12em; text-transform:uppercase; color:var(--text-3);
+                    margin:0 0 .75rem; display:flex; align-items:center; gap:.4rem; }
+
+/* ── Mini standings ─────────────────────────────────────────────────────── */
+.tp-standings { width:100%; border-collapse:collapse; font-size:.82rem; }
+.tp-standings th { font-family:var(--font-display); font-size:.58rem; letter-spacing:.1em;
+                   text-transform:uppercase; color:var(--text-3); padding:.4rem .6rem;
+                   text-align:center; font-weight:700; }
+.tp-standings th:first-child, .tp-standings th:nth-child(2) { text-align:left; }
+.tp-standings td { padding:.45rem .6rem; text-align:center; border-top:1px solid var(--border); }
+.tp-standings td:nth-child(2) { text-align:left; }
+.tp-flag    { margin-right:.35rem; }
+.tp-pts     { font-weight:700; color:var(--text); }
+.tp-this-team td { background:rgba(0,209,104,.06); color:var(--text); }
+.tp-this-team .tp-pts { color:var(--green); }
+.tp-pos     { color:var(--text-3); font-size:.75rem; width:1.5rem; }
+
+/* ── Fixture cards ──────────────────────────────────────────────────────── */
+.tp-fixtures   { display:flex; flex-direction:column; gap:.5rem; }
+.tp-fixture-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius-sm); padding:.7rem 1rem;
+  cursor:pointer; transition:border-color var(--transition), background var(--transition);
+}
+.tp-fixture-card:hover { border-color:var(--border-mid); background:var(--surface-2); }
+.tp-fixture-card.tp-ours { border-color:rgba(0,209,104,.2); }
+
+.tp-fx-teams  { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:.75rem; }
+.tp-fx-team   { font-size:.85rem; font-weight:500; }
+.tp-fx-away   { text-align:right; }
+.tp-winner    { color:var(--green); font-weight:700; }
+.tp-fx-score  { font-family:var(--font-display); font-weight:800; font-size:1.1rem;
+                text-align:center; white-space:nowrap; }
+.tp-score-live { color:var(--red); animation:livePulse 1.5s ease-in-out infinite; }
+.tp-fx-meta   { font-size:.68rem; color:var(--text-3); margin-top:.3rem;
+                display:flex; align-items:center; gap:.4rem; flex-wrap:wrap; }
+.fp-badge     { font-family:var(--font-display); font-size:.55rem; font-weight:700;
+                letter-spacing:.08em; padding:.1rem .3rem; border-radius:2px; }
+.fp-live      { color:var(--red); border:1px solid rgba(255,77,77,.3);
+                animation:livePulse 1.5s ease-in-out infinite; }
+.fp-ft        { color:var(--text-3); }
+
+/* ── Fixture detail modal ───────────────────────────────────────────────── */
+.fixture-modal-backdrop {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,.65); z-index:1000;
+  align-items:center; justify-content:center; padding:1rem;
+}
+.fixture-modal-backdrop.open { display:flex; }
+.fixture-modal {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); width:100%; max-width:680px;
+  max-height:90vh; overflow-y:auto; position:relative; padding:1.5rem;
+}
+.fixture-modal-close {
+  position:absolute; top:.75rem; right:.75rem;
+  background:none; border:none; color:var(--text-3);
+  font-size:1.1rem; cursor:pointer; padding:.25rem .5rem;
+  border-radius:var(--radius-sm); transition:color var(--transition);
+}
+.fixture-modal-close:hover { color:var(--text); }
+
+/* ── Fixture detail header ──────────────────────────────────────────────── */
+.fd-header   { text-align:center; margin-bottom:1.5rem; padding-bottom:1rem; border-bottom:1px solid var(--border); }
+.fd-teams    { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:1rem; margin-bottom:.5rem; }
+.fd-team     { font-size:1rem; font-weight:600; display:flex; flex-direction:column; align-items:center; gap:.25rem; font-size:1.5rem; }
+.fd-team span { font-size:.9rem; font-weight:600; }
+.fd-home     { text-align:center; }
+.fd-away     { text-align:center; }
+.fd-score    { font-family:var(--font-display); font-weight:900; font-size:2rem; text-align:center; }
+.fd-score-live { color:var(--red); }
+.fd-meta     { font-size:.75rem; color:var(--text-3); }
+
+/* ── Timeline ───────────────────────────────────────────────────────────── */
+.fd-timeline { margin-bottom:1.5rem; display:flex; flex-direction:column; gap:.25rem; }
+.fd-ev {
+  display:grid; grid-template-columns:2.5rem 1.5rem 1fr auto;
+  align-items:center; gap:.5rem; font-size:.8rem;
+  padding:.35rem .5rem; border-radius:4px;
+}
+.fd-ev-home { background:rgba(0,209,104,.04); }
+.fd-ev-away { background:rgba(100,150,255,.04); direction:rtl; }
+.fd-ev-away .fd-ev-min  { text-align:right; }
+.fd-ev-min  { font-family:var(--font-display); font-size:.72rem; color:var(--text-3); text-align:right; }
+.fd-ev-icon { font-size:1rem; text-align:center; }
+.fd-ev-player { font-weight:500; }
+.fd-ev-assist { color:var(--text-3); font-size:.75rem; }
+.fd-ev-team { font-size:.68rem; color:var(--text-3); white-space:nowrap; }
+.fd-ev-goal .fd-ev-player { color:var(--green); font-weight:700; }
+.fd-ev-var  { opacity:.6; }
+
+/* ── Lineups ────────────────────────────────────────────────────────────── */
+.fd-lineups       { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem; }
+.fd-lineup-title  { font-family:var(--font-display); font-size:.72rem; font-weight:700;
+                    letter-spacing:.08em; text-transform:uppercase; color:var(--text-2);
+                    margin-bottom:.5rem; display:flex; align-items:center; gap:.3rem; }
+.fd-lineup-list   { display:flex; flex-direction:column; gap:.2rem; }
+.fd-player        { display:grid; grid-template-columns:1.5rem 1fr auto; gap:.4rem;
+                    font-size:.78rem; padding:.2rem 0; }
+.fd-sub           { color:var(--text-3); }
+.fd-shirt         { font-family:var(--font-display); font-weight:700; color:var(--text-3); font-size:.72rem; }
+.fd-ppos          { font-size:.65rem; color:var(--text-3); text-align:right; }
+.fd-lineup-sub-title { font-size:.65rem; color:var(--text-3); text-transform:uppercase;
+                       letter-spacing:.08em; margin:.5rem 0 .25rem; border-top:1px solid var(--border); padding-top:.4rem; }
+
+/* ── Match statistics ───────────────────────────────────────────────────── */
+.fd-stats       { margin-bottom:1.5rem; }
+.fd-stats-title { font-family:var(--font-display); font-size:.72rem; font-weight:700;
+                  letter-spacing:.1em; text-transform:uppercase; color:var(--text-3);
+                  margin-bottom:.75rem; }
+.fd-stat-row    { display:grid; grid-template-columns:3rem 1fr 3rem;
+                  align-items:center; gap:.5rem; padding:.3rem 0;
+                  border-top:1px solid var(--border); font-size:.8rem; }
+.fd-stat-val    { font-family:var(--font-display); font-weight:700; }
+.fd-stat-home   { text-align:right; color:var(--green); }
+.fd-stat-away   { text-align:left; color:rgba(100,150,255,.9); }
+.fd-stat-key    { text-align:center; color:var(--text-3); font-size:.72rem; }
+.fd-stat-bar    { height:4px; background:rgba(100,150,255,.25); border-radius:2px; margin-top:3px; }
+.fd-stat-bar-home { height:100%; background:var(--green); border-radius:2px; }
+.fd-no-data     { text-align:center; color:var(--text-3); padding:2rem 0; }
+
+@media (max-width:600px) {
+  .fd-lineups { grid-template-columns:1fr; }
+  .fd-teams   { gap:.5rem; }
+  .fd-score   { font-size:1.5rem; }
+}

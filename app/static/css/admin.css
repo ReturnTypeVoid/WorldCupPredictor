@@ -1,0 +1,172 @@
+/* Admin area overrides — builds on main.css tokens */
+
+.admin-layout {
+  display: flex;
+  min-height: calc(100vh - 56px);
+}
+
+.admin-topbar {
+  height: 56px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.admin-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text);
+  text-decoration: none;
+}
+.admin-brand-dot {
+  width: 6px; height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+}
+
+.admin-spacer { flex: 1; }
+.admin-user {
+  font-size: 0.8rem;
+  color: var(--text-3);
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+}
+
+.admin-main { flex: 1; padding: 2rem 2rem; max-width: 1100px; margin: 0 auto; width: 100%; }
+
+.page-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+}
+
+/* Data table */
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  padding: 0.5rem 0.85rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.data-table td {
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.875rem;
+  color: var(--text-2);
+}
+.data-table td:first-child { color: var(--text); }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--surface-2); }
+
+/* Slug monospace */
+.slug {
+  font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+  font-size: 0.82rem;
+  color: var(--green);
+}
+
+/* Flash alerts */
+.flash {
+  padding: 0.7rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+.flash-danger  { background: rgba(255,77,77,0.1);   color: var(--red);   border: 1px solid rgba(255,77,77,0.25); }
+.flash-warning { background: rgba(255,165,0,0.1);   color: var(--amber); border: 1px solid rgba(255,165,0,0.25); }
+.flash-success { background: rgba(0,209,104,0.1);   color: var(--green); border: 1px solid rgba(0,209,104,0.25); }
+.flash-info    { background: rgba(99,179,237,0.08); color: #63b3ed;      border: 1px solid rgba(99,179,237,0.2); }
+
+/* Auth card (login / change password) */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: var(--bg);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+}
+
+.auth-logo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--green);
+  text-align: center;
+  margin-bottom: 0.35rem;
+}
+.auth-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.6rem;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 1.75rem;
+  color: var(--text);
+}
+
+.form-fields { display: flex; flex-direction: column; gap: 0.85rem; margin-bottom: 1.25rem; }
+
+/* Stat strip in dashboard */
+.stat-strip {
+  display: flex;
+  gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+.stat-cell {
+  flex: 1;
+  padding: 1rem 1.25rem;
+  text-align: center;
+}
+.stat-cell + .stat-cell { border-left: 1px solid var(--border); }
+.stat-cell-num {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1;
+}
+.stat-cell-label {
+  font-size: 0.65rem;
+  color: var(--text-3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 0.25rem;
+}

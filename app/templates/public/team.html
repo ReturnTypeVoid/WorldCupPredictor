@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ team_name }} — WC 2026</title>
+  <link rel="stylesheet" href="/static/css/main.css">
+  <link rel="stylesheet" href="/static/css/team.css">
+</head>
+<body>
+<div class="topbar">
+  <a class="topbar-brand" href="/">WC <span class="topbar-year">2026</span></a>
+</div>
+<main class="team-page">
+  <div id="team-content">
+    <div class="groups-loading"><div class="spinner"></div><p>Loading…</p></div>
+  </div>
+</main>
+<div id="fixture-modal" class="fixture-modal-backdrop">
+  <div class="fixture-modal">
+    <button class="fixture-modal-close" id="modal-close">✕</button>
+    <div id="fixture-modal-content">
+      <div class="groups-loading"><div class="spinner"></div><p>Loading match…</p></div>
+    </div>
+  </div>
+</div>
+<script>
+var TEAM_NAME = {{ team_name | tojson }};
+</script>
+<script src="/static/js/team.js"></script>
+</body>
+</html>

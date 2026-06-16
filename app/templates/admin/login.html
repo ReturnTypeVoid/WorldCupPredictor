@@ -1,0 +1,29 @@
+{% extends "admin/base.html" %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">WC2026</div>
+    <h1 class="auth-title">Admin</h1>
+
+    <div class="form-fields">
+      <div class="field">
+        <label for="username">Username</label>
+        <input type="text" id="username" autocomplete="username" autofocus>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" autocomplete="current-password">
+      </div>
+    </div>
+
+    <button class="btn btn-primary" id="login-btn" style="width:100%">Sign in</button>
+    <div class="status" id="status-msg"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/admin-login.js"></script>
+{% endblock %}
