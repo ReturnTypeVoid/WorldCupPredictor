@@ -251,11 +251,3 @@ printf 'Create or edit the app environment file yourself:\n'
 printf '  nano %s\n\n' "$ENV_FILE"
 printf 'Add this database connection string to .env:\n'
 printf '  DATABASE_URL=%s\n\n' "$DATABASE_URL"
-printf 'Also make sure your .env contains the other app values from .env.example.\n'
-printf 'JWT key files were created here:\n'
-printf '  %s\n' "$JWT_PRIV"
-printf '  %s\n\n' "$JWT_PUB"
-printf 'Start the app after .env is configured:\n'
-printf '  sudo systemctl start %s\n\n' "$SERVICE_NAME"
-printf 'View logs:\n'
-printf '  sudo journalctl -u %s -f\n\n' "$SERVICE_NAME"
