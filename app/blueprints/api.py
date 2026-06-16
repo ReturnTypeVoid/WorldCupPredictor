@@ -626,9 +626,13 @@ def get_standings():
 def get_fixture_detail(external_id):
     """
     Return detailed data for one fixture from the API-Football cache.
-    Fetches live events, lineups, statistics from the API on demand.
+    Uses a single /fixtures?id=X call which returns events, lineups and
+    statistics all embedded — avoids the 3-call approach that hits sub-endpoints
+    some plans don't support.
     """
     import os
+    import json as _json
+
     api_key = os.environ.get('API_FOOTBALL_KEY', '').strip()
 
     with db_connection() as conn:
@@ -641,8 +645,8 @@ def get_fixture_detail(external_id):
 
     result = _serialise(row)
 
-    # Try cache first
-    import json as _json
+    # Try cache first — only use if data is non-empty (empty cache rows exist
+    # from the old backfill path and should be treated as a cache miss)
     with db_connection() as conn:
         with conn.cursor() as cur:
             cur.execute(
@@ -652,26 +656,34 @@ def get_fixture_detail(external_id):
             cached = cur.fetchone()
 
     if cached:
-        return jsonify(
-            fixture=result,
-            events=_json.loads(cached['events_json'] or '[]'),
-            lineups=_json.loads(cached['lineups_json'] or '[]'),
-            statistics=_json.loads(cached['stats_json'] or '[]'),
-        )
+        events     = _json.loads(cached['events_json']  or '[]')
+        lineups    = _json.loads(cached['lineups_json'] or '[]')
+        statistics = _json.loads(cached['stats_json']   or '[]')
+        # If we have real data return it; otherwise fall through to re-fetch
+        if events or lineups or statistics:
+            return jsonify(
+                fixture=result,
+                events=events,
+                lineups=lineups,
+                statistics=statistics,
+            )
 
     if not api_key:
         return jsonify(fixture=result, events=[], lineups=[], statistics=[])
 
-    # Cache miss — fetch from API and store for next time
+    # Single call — /fixtures?id=X returns events, lineups and statistics embedded
     from app.live_fetch import _api_get
-    events_data = _api_get('/fixtures/events',     api_key, {'fixture': external_id})
-    lineups_data = _api_get('/fixtures/lineups',   api_key, {'fixture': external_id})
-    stats_data   = _api_get('/fixtures/statistics', api_key, {'fixture': external_id})
+    fix_data = _api_get('/fixtures', api_key, {'id': external_id})
 
-    events     = events_data.get('response', [])    if events_data  else []
-    lineups    = lineups_data.get('response', [])   if lineups_data else []
-    statistics = stats_data.get('response', [])     if stats_data   else []
+    if not fix_data or not fix_data.get('response'):
+        return jsonify(fixture=result, events=[], lineups=[], statistics=[])
 
+    fix = fix_data['response'][0]
+    events     = fix.get('events',     []) or []
+    lineups    = fix.get('lineups',    []) or []
+    statistics = fix.get('statistics', []) or []
+
+    # Persist to cache so subsequent loads are instant
     with db_connection() as conn:
         with conn.cursor() as cur:
             cur.execute("""
