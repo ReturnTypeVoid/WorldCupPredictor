@@ -23,10 +23,10 @@ set -euo pipefail
 # Edit these values before running ./install.sh.
 
 # App install directory. This directory must contain this script and the app files.
-APP_DIR="${HOME}/worldcup2026"
+APP_DIR="${HOME}/WorldCupPredictor"
 
 # systemd service name.
-SERVICE_NAME="worldcup2026"
+SERVICE_NAME="WorldCupPredictor"
 
 # Port the app listens on.
 APP_PORT=5000
