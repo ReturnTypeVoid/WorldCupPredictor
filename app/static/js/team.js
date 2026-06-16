@@ -3,6 +3,8 @@
 var FINISHED = ['FT','AET','PEN','AWD','WO'];
 var LIVE     = ['1H','2H','HT','ET','BT','P','SUSP','INT','LIVE'];
 
+var TEAM_NAME = JSON.parse(document.getElementById('team-name-data').textContent);
+
 var FLAGS = {
   'Mexico':'🇲🇽','South Korea':'🇰🇷','South Africa':'🇿🇦','Czechia':'🇨🇿',
   'Canada':'🇨🇦','Switzerland':'🇨🇭','Qatar':'🇶🇦','Bosnia and Herzegovina':'🇧🇦',

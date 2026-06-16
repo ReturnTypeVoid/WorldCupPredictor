@@ -24,9 +24,7 @@
     </div>
   </div>
 </div>
-<script>
-var TEAM_NAME = {{ team_name | tojson }};
-</script>
+<script type="application/json" id="team-name-data">{{ team_name | tojson }}</script>
 <script src="/static/js/team.js"></script>
 </body>
 </html>

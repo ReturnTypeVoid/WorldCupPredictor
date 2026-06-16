@@ -101,6 +101,13 @@ def _create_schema():
             home_fairplay INTEGER     NOT NULL DEFAULT 0,
             away_fairplay INTEGER     NOT NULL DEFAULT 0
         )""",
+        """CREATE TABLE IF NOT EXISTS fixture_cache (
+            external_id   INTEGER PRIMARY KEY,
+            events_json   TEXT,
+            lineups_json  TEXT,
+            stats_json    TEXT,
+            cached_at     TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        )""",
         """CREATE TABLE IF NOT EXISTS live_sync_meta (
             id        INTEGER PRIMARY KEY CHECK(id = 1),
             last_sync TIMESTAMPTZ,

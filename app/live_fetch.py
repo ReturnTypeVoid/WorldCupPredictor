@@ -286,27 +286,47 @@ def _sync_once(api_key):
                     _upsert_fixture(conn, fix)
                 conn.commit()
 
-        # ── Step 5: Card backfill — fetch events for finished group matches ──
-        # that still have home_fairplay=0 and away_fairplay=0
-        # Limit to 3 per cycle to stay within rate limits
+        # ── Step 5: Detail backfill — cache events/lineups/stats for finished matches
+        # Prioritise matches not yet cached; limit to 3 per cycle for quota safety
         with db_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute("""
-                    SELECT external_id FROM live_results
-                    WHERE status IN ('FT','AET','PEN')
-                      AND home_fairplay = 0
-                      AND away_fairplay = 0
-                      AND external_id IS NOT NULL
-                    ORDER BY kickoff DESC
+                    SELECT lr.external_id FROM live_results lr
+                    LEFT JOIN fixture_cache fc ON fc.external_id = lr.external_id
+                    WHERE lr.status IN ('FT','AET','PEN')
+                      AND lr.external_id IS NOT NULL
+                      AND fc.external_id IS NULL
+                    ORDER BY lr.kickoff DESC
                     LIMIT 3
                 """)
                 backfill_ids = [r['external_id'] for r in cur.fetchall()]
 
         for ext_id in backfill_ids:
-            ev_data = _api_get('/fixtures/events', api_key, {'fixture': ext_id})
-            if ev_data and ev_data.get('response'):
-                events = ev_data['response']
-                # Determine home/away side from fixture teams
+            ev_data  = _api_get('/fixtures/events',    api_key, {'fixture': ext_id})
+            lu_data  = _api_get('/fixtures/lineups',   api_key, {'fixture': ext_id})
+            st_data  = _api_get('/fixtures/statistics', api_key, {'fixture': ext_id})
+
+            events    = ev_data.get('response', [])  if ev_data  else []
+            lineups   = lu_data.get('response', [])  if lu_data  else []
+            statistics = st_data.get('response', []) if st_data  else []
+
+            with db_connection() as conn:
+                with conn.cursor() as cur:
+                    cur.execute("""
+                        INSERT INTO fixture_cache (external_id, events_json, lineups_json, stats_json)
+                        VALUES (%s, %s, %s, %s)
+                        ON CONFLICT (external_id) DO UPDATE SET
+                            events_json  = excluded.events_json,
+                            lineups_json = excluded.lineups_json,
+                            stats_json   = excluded.stats_json,
+                            cached_at    = NOW()
+                    """, (ext_id, json.dumps(events), json.dumps(lineups), json.dumps(statistics)))
+                conn.commit()
+            log.debug('Detail backfill: cached fixture %d (%d events, %d lineups)',
+                      ext_id, len(events), len(lineups))
+
+            # Also update fair-play from events if not yet set
+            if events:
                 fix_data = _api_get('/fixtures', api_key, {'id': ext_id})
                 if fix_data and fix_data.get('response'):
                     fix = fix_data['response'][0]
@@ -333,7 +353,7 @@ def _sync_once(api_key):
                                     WHERE external_id = %s
                                 """, (home_fp, away_fp, ext_id))
                             conn.commit()
-                        log.debug('Card backfill: fixture %d home_fp=%d away_fp=%d',
+                        log.debug('Fair-play backfill: fixture %d home_fp=%d away_fp=%d',
                                   ext_id, home_fp, away_fp)
 
         with db_connection() as conn:

@@ -639,26 +639,54 @@ def get_fixture_detail(external_id):
     if not row:
         return jsonify(error="Fixture not found"), 404
 
-    result = dict(row)
+    result = _serialise(row)
+
+    # Try cache first
+    import json as _json
+    with db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                "SELECT events_json, lineups_json, stats_json FROM fixture_cache WHERE external_id = %s",
+                (external_id,),
+            )
+            cached = cur.fetchone()
+
+    if cached:
+        return jsonify(
+            fixture=result,
+            events=_json.loads(cached['events_json'] or '[]'),
+            lineups=_json.loads(cached['lineups_json'] or '[]'),
+            statistics=_json.loads(cached['stats_json'] or '[]'),
+        )
 
     if not api_key:
         return jsonify(fixture=result, events=[], lineups=[], statistics=[])
 
-    # Fetch events (goals, cards, substitutions)
+    # Cache miss — fetch from API and store for next time
     from app.live_fetch import _api_get
-    events_data = _api_get('/fixtures/events', api_key, {'fixture': external_id})
-    events = events_data.get('response', []) if events_data else []
+    events_data = _api_get('/fixtures/events',     api_key, {'fixture': external_id})
+    lineups_data = _api_get('/fixtures/lineups',   api_key, {'fixture': external_id})
+    stats_data   = _api_get('/fixtures/statistics', api_key, {'fixture': external_id})
 
-    # Fetch lineups
-    lineups_data = _api_get('/fixtures/lineups', api_key, {'fixture': external_id})
-    lineups = lineups_data.get('response', []) if lineups_data else []
+    events     = events_data.get('response', [])    if events_data  else []
+    lineups    = lineups_data.get('response', [])   if lineups_data else []
+    statistics = stats_data.get('response', [])     if stats_data   else []
 
-    # Fetch statistics
-    stats_data = _api_get('/fixtures/statistics', api_key, {'fixture': external_id})
-    statistics = stats_data.get('response', []) if stats_data else []
+    with db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                INSERT INTO fixture_cache (external_id, events_json, lineups_json, stats_json)
+                VALUES (%s, %s, %s, %s)
+                ON CONFLICT (external_id) DO UPDATE SET
+                    events_json  = excluded.events_json,
+                    lineups_json = excluded.lineups_json,
+                    stats_json   = excluded.stats_json,
+                    cached_at    = NOW()
+            """, (external_id, _json.dumps(events), _json.dumps(lineups), _json.dumps(statistics)))
+        conn.commit()
 
     return jsonify(
-        fixture=_serialise(result),
+        fixture=result,
         events=events,
         lineups=lineups,
         statistics=statistics,
